@@ -1,24 +1,21 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const fs = require('fs');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const fs = require("fs");
+const moment = require("moment");
+const fixtures = require("./fixtures");
 
 const app = express();
 app.use(cors()); // so that app can access
 app.use(bodyParser.json()); // for parsing application/json
 
-let bookings = JSON.parse(fs.readFileSync('./server/bookings.json'))
-  .map((bookingRecord) => ({
-    time: Date.parse(bookingRecord.time),
-    duration: bookingRecord.duration * 60 * 1000, // mins into ms
-    userId: bookingRecord.user_id,
-  }))
+let bookings = fixtures.bookings;
 
-app.get('/bookings', (_, res) => {
+app.get("/bookings", (_, res) => {
   res.json(bookings);
 });
 
-app.post('/bookings', (req, res) => {
+app.post("/bookings", (req, res) => {
   const newBookings = req.body;
   bookings = bookings.concat(newBookings);
   res.json(bookings);
