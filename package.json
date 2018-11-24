@@ -5,10 +5,13 @@
   "dependencies": {
     "cors": "^2.8.4",
     "express": "^4.16.3",
+    "lodash": "^4.17.11",
+    "moment": "^2.22.2",
     "react": "^16.4.2",
+    "react-big-calendar": "0.20.2",
     "react-dom": "^16.4.2",
     "react-dropzone": "^5.0.0",
-    "react-scripts": "1.1.4"
+    "react-scripts": "^2.1.1"
   },
   "scripts": {
     "server": "node server/index.js",
@@ -16,5 +19,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "prettier": "1.15.2"
   }
 }
