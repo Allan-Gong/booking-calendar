@@ -3,6 +3,11 @@ const _ = require("lodash");
 
 exports.toBooking = raw => {
   const start = moment(raw.time);
+  if (!start.isValid()) {
+    console.error(`Invalid time: ${raw.time}`);
+    return undefined;
+  }
+
   const end = moment(raw.time).add(raw.duration, "minutes");
 
   return {

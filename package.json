@@ -18,7 +18,7 @@
     "server": "node server/index.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "browserslist": [
@@ -28,6 +28,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "jest": "^23.6.0",
     "prettier": "1.15.2"
   }
 }

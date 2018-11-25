@@ -3,7 +3,7 @@ import Dropzone from "react-dropzone";
 import csv from "csvtojson";
 import "./App.css";
 import Calendar from "./Calendar";
-import { toBooking } from "./booking";
+import { toBooking } from "./lib/booking";
 
 const apiUrl = "http://localhost:3001";
 
@@ -48,11 +48,11 @@ class App extends Component {
         .fromString(reader.result)
         .then(raw => {
           console.log(raw);
-          this.postBookings(raw.map(toBooking));
+          this.postBookings(raw.map(toBooking).filter(Boolean));
         });
     };
-    reader.onabort = () => console.log("file reading was aborted");
-    reader.onerror = () => console.log("file reading has failed");
+    reader.onabort = () => console.warn("file reading was aborted");
+    reader.onerror = () => console.error("file reading has failed");
 
     acceptedFiles.forEach(file => {
       reader.readAsBinaryString(file);
