@@ -23,7 +23,6 @@ class App extends Component {
       .then(response => response.json())
       .then(
         json => {
-          console.log(json);
           this.setState({
             isLoaded: true,
             bookings: json.bookings,
@@ -47,7 +46,6 @@ class App extends Component {
       })
         .fromString(reader.result)
         .then(raw => {
-          console.log(raw);
           this.postBookings(raw.map(toBooking).filter(Boolean));
         });
     };
