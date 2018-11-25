@@ -7,8 +7,11 @@ const today = moment()
 
 exports.bookings = [
   {
-    time: today.hour(10).valueOf(),
-    duration: 60 * 60 * 1000,
+    time: today
+      .clone()
+      .hour(10)
+      .format(),
+    duration: 60,
     userId: "user_1"
   },
   {
@@ -16,8 +19,8 @@ exports.bookings = [
       .clone()
       .add(-1, "day")
       .hour(11)
-      .valueOf(),
-    duration: 120 * 60 * 1000,
+      .format(),
+    duration: 120,
     userId: "user_1"
   },
   {
@@ -25,8 +28,8 @@ exports.bookings = [
       .clone()
       .add(-2, "day")
       .hour(10)
-      .valueOf(),
-    duration: 180 * 60 * 1000,
+      .format(),
+    duration: 180,
     userId: "user_1"
   },
   {
@@ -34,8 +37,8 @@ exports.bookings = [
       .clone()
       .add(-3, "day")
       .hour(10)
-      .valueOf(),
-    duration: 180 * 60 * 1000,
+      .format(),
+    duration: 180,
     userId: "user_1"
   },
   {
@@ -43,8 +46,44 @@ exports.bookings = [
       .clone()
       .add(1, "day")
       .hour(14)
-      .valueOf(),
-    duration: 240 * 60 * 1000,
+      .format(),
+    duration: 240,
+    userId: "user_1"
+  },
+  {
+    time: today
+      .clone()
+      .add(2, "day")
+      .hour(14)
+      .format(),
+    duration: 240,
+    userId: "user_1"
+  },
+  {
+    time: today
+      .clone()
+      .add(3, "day")
+      .hour(14)
+      .format(),
+    duration: 240,
+    userId: "user_1"
+  },
+  {
+    time: today
+      .clone()
+      .add(4, "day")
+      .hour(14)
+      .format(),
+    duration: 240,
+    userId: "user_1"
+  },
+  {
+    time: today
+      .clone()
+      .add(5, "day")
+      .hour(14)
+      .format(),
+    duration: 240,
     userId: "user_1"
   }
 ];

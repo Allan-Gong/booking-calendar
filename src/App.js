@@ -1,51 +1,100 @@
-import React, { Component } from 'react';
-import Dropzone from 'react-dropzone';
-import './App.css';
+import React, { Component } from "react";
+import Dropzone from "react-dropzone";
+import csv from "csvtojson";
+import "./App.css";
+import Calendar from "./Calendar";
+import { toBooking } from "./booking";
 
-const apiUrl = 'http://localhost:3001'
+const apiUrl = "http://localhost:3001";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      bookings: [],
+      conflicts: []
+    };
+  }
 
-  state = {}
-
-  componentWillMount() {
+  componentDidMount() {
     fetch(`${apiUrl}/bookings`)
-      .then((response) => response.json())
-      .then((bookings) => {
-        this.setState({ bookings })
-      })
+      .then(response => response.json())
+      .then(
+        json => {
+          console.log(json);
+          this.setState({
+            isLoaded: true,
+            bookings: json.bookings,
+            conflicts: json.conflicts
+          });
+        },
+        error => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      );
   }
 
-  onDrop(files) {
-    console.log(files);
-  }
+  onDrop = (acceptedFiles, rejectedFiles) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      csv({
+        checkType: true
+      })
+        .fromString(reader.result)
+        .then(raw => {
+          console.log(raw);
+          this.postBookings(raw.map(toBooking));
+        });
+    };
+    reader.onabort = () => console.log("file reading was aborted");
+    reader.onerror = () => console.log("file reading has failed");
+
+    acceptedFiles.forEach(file => {
+      reader.readAsBinaryString(file);
+    });
+  };
+
+  postBookings = bookings => {
+    fetch(`${apiUrl}/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookings)
+    })
+      .then(response => response.json())
+      .then(
+        json => {
+          this.setState({
+            isLoaded: true,
+            bookings: json.bookings,
+            conflicts: json.conflicts
+          });
+        },
+        error => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      );
+  };
 
   render() {
+    const { error, isLoaded, bookings, conflicts } = this.state;
     return (
       <div className="App">
         <div className="App-header">
-          <Dropzone
-            accept=".csv"
-            onDrop={this.onDrop}
-          >
+          <Dropzone accept=".csv" onDrop={this.onDrop}>
             Drag files here
           </Dropzone>
         </div>
-        <div className="App-main">
-          <p>Existing bookings:</p>
-          {
-            (this.state.bookings || []).map((booking, i) => {
-              const date = new Date(booking.time);
-              const duration = booking.duration / (60 * 1000);
-              return (
-                <p key={i} className="App-booking">
-                  <span className="App-booking-time">{date.toString()}</span>
-                  <span className="App-booking-duration">{duration.toFixed(1)}</span>
-                  <span className="App-booking-user">{booking.userId}</span>
-                </p>
-              )
-            })
-          }
+
+        <div className="App-calendar">
+          <Calendar bookings={bookings} conflicts={conflicts} />
         </div>
       </div>
     );
