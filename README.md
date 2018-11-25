@@ -32,3 +32,14 @@ What needs to be added / changed:
 - The app needs to make a `POST` request (`/bookings`) to the server to add the new bookings that don't overlap with existing bookings and refetch the list of bookings from the server. 
 
 Feel free to change any of the existing code (and add any dependencies) to achieve the required specifications / functionality. If you're having trouble starting or need help with any part, please send us an email and we'll give you a pointer.
+
+## Notes on implementing required features
+
+- Using [Full Calendar](https://fullcalendar.io/) for display
+- Replaced deprecated time format(GMT) with UTC datetime format
+
+## Future improvements
+
+- React component testing
+- Drag & drop on events as a way to resolve booking conflicts
+- Click on event to edit/delete
