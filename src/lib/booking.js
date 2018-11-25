@@ -1,5 +1,6 @@
 const moment = require("moment");
 const _ = require("lodash");
+const uuidv4 = require("uuid/v4");
 
 exports.toBooking = raw => {
   const start = moment(raw.time);
