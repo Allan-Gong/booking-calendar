@@ -3,7 +3,6 @@ import Dropzone from "react-dropzone";
 import csv from "csvtojson";
 import "./App.css";
 import Calendar from "./Calendar";
-import { toBooking } from "./lib/booking";
 
 const apiUrl = "http://localhost:3001";
 
@@ -45,8 +44,8 @@ class App extends Component {
         checkType: true
       })
         .fromString(reader.result)
-        .then(raw => {
-          this.postBookings(raw.map(toBooking).filter(Boolean));
+        .then(rows => {
+          this.postCsvRows(rows);
         });
     };
     reader.onabort = () => console.warn("file reading was aborted");
@@ -57,11 +56,63 @@ class App extends Component {
     });
   };
 
-  postBookings = bookings => {
+  postCsvRows = rows => {
     fetch(`${apiUrl}/bookings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bookings)
+      body: JSON.stringify(rows)
+    })
+      .then(response => response.json())
+      .then(
+        json => {
+          this.setState({
+            isLoaded: true,
+            bookings: json.bookings,
+            conflicts: json.conflicts
+          });
+        },
+        error => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      );
+  };
+
+  eventClickFunc = event => {
+    if (window.confirm("Confirm to delete this booking ?")) {
+      const eventId = event.id;
+      fetch(`${apiUrl}/booking/${eventId}`, { method: "DELETE" })
+        .then(response => response.json())
+        .then(
+          json => {
+            this.setState({
+              isLoaded: true,
+              bookings: json.bookings,
+              conflicts: json.conflicts
+            });
+          },
+          error => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          }
+        );
+    }
+  };
+
+  eventDropFunc = event => {
+    fetch(`${apiUrl}/booking`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: event.id,
+        title: event.title,
+        start: event.start.format(),
+        end: event.end.format()
+      })
     })
       .then(response => response.json())
       .then(
@@ -92,7 +143,12 @@ class App extends Component {
         </div>
 
         <div className="App-calendar">
-          <Calendar bookings={bookings} conflicts={conflicts} />
+          <Calendar
+            bookings={bookings}
+            conflicts={conflicts}
+            eventClickFunc={this.eventClickFunc}
+            eventDropFunc={this.eventDropFunc}
+          />
         </div>
       </div>
     );
