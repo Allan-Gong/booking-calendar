@@ -5,7 +5,12 @@ const cors = require("cors");
 const fs = require("fs");
 const moment = require("moment");
 const fixtures = require("./fixtures");
-const { toBooking, addNewBookings } = require("../lib/booking");
+const {
+  toBooking,
+  addNewBookings,
+  updateBooking,
+  deleteBooking
+} = require("../lib/booking_service");
 
 const app = express();
 app.use(cors()); // so that app can access
@@ -24,9 +29,10 @@ app.get("/bookings", (_, res) => {
 
 app.post("/bookings", (req, res) => {
   const newBookings = req.body;
-  result = addNewBookings(bookings, newBookings.map(toBooking).filter(Boolean));
-  bookings = result.bookings;
-  conflicts = conflicts.concat(result.conflicts);
+  const result = addNewBookings(
+    bookings,
+    newBookings.map(toBooking).filter(Boolean)
+  );
 
   res.json({
     bookings: result.bookings,
@@ -36,23 +42,7 @@ app.post("/bookings", (req, res) => {
 
 app.put("/booking", (req, res) => {
   const bookingToUpdate = req.body;
-  console.log("bookingToUpdate", bookingToUpdate);
-
-  [bookings, conflicts].forEach(listOfBooking => {
-    const found = _.find(
-      listOfBooking,
-      booking => booking.id == bookingToUpdate.id
-    );
-    if (found != undefined) {
-      found.title = bookingToUpdate.title;
-      found.start = bookingToUpdate.start;
-      found.end = bookingToUpdate.end;
-    }
-  });
-
-  result = addNewBookings([], bookings.concat(conflicts));
-  bookings = result.bookings;
-  conflicts = conflicts;
+  const result = updateBooking(bookings, conflicts, bookingToUpdate);
 
   res.json({
     bookings: result.bookings,
@@ -62,12 +52,11 @@ app.put("/booking", (req, res) => {
 
 app.delete("/booking/:bookingId", (req, res) => {
   const bookingId = req.params.bookingId;
-  bookings = _.remove(bookings, booking => booking.id != bookingId);
-  conflicts = _.remove(conflicts, booking => booking.id != bookingId);
+  const result = deleteBooking(bookings, conflicts, bookingId);
 
   res.json({
-    bookings: bookings,
-    conflicts: conflicts
+    bookings: result.bookings,
+    conflicts: result.conflicts
   });
 });
 
