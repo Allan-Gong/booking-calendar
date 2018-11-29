@@ -20,21 +20,7 @@ class App extends Component {
   componentDidMount() {
     fetch(`${apiUrl}/bookings`)
       .then(response => response.json())
-      .then(
-        json => {
-          this.setState({
-            isLoaded: true,
-            bookings: json.bookings,
-            conflicts: json.conflicts
-          });
-        },
-        error => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      );
+      .then(onSuccess, onError);
   }
 
   onDrop = (acceptedFiles, rejectedFiles) => {
@@ -63,21 +49,7 @@ class App extends Component {
       body: JSON.stringify(rows)
     })
       .then(response => response.json())
-      .then(
-        json => {
-          this.setState({
-            isLoaded: true,
-            bookings: json.bookings,
-            conflicts: json.conflicts
-          });
-        },
-        error => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      );
+      .then(onSuccess, onError);
   };
 
   eventClickFunc = event => {
@@ -85,21 +57,7 @@ class App extends Component {
       const eventId = event.id;
       fetch(`${apiUrl}/booking/${eventId}`, { method: "DELETE" })
         .then(response => response.json())
-        .then(
-          json => {
-            this.setState({
-              isLoaded: true,
-              bookings: json.bookings,
-              conflicts: json.conflicts
-            });
-          },
-          error => {
-            this.setState({
-              isLoaded: true,
-              error
-            });
-          }
-        );
+        .then(onSuccess, onError);
     }
   };
 
@@ -115,21 +73,22 @@ class App extends Component {
       })
     })
       .then(response => response.json())
-      .then(
-        json => {
-          this.setState({
-            isLoaded: true,
-            bookings: json.bookings,
-            conflicts: json.conflicts
-          });
-        },
-        error => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      );
+      .then(onSuccess, onError);
+  };
+
+  onSuccess = json => {
+    this.setState({
+      isLoaded: true,
+      bookings: json.bookings,
+      conflicts: json.conflicts
+    });
+  };
+
+  onError = error => {
+    this.setState({
+      isLoaded: true,
+      error
+    });
   };
 
   render() {
