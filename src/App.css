@@ -35,3 +35,8 @@
   display: inline-block;
   width: 80px;
 }
+
+.App-calendar {
+  width: 80%;
+  margin: 1em auto;
+}
